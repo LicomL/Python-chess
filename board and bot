@@ -1,0 +1,36 @@
+import chess
+
+# Criar um tabuleiro de xadrez
+board = chess.Board()
+
+# Mostrar o tabuleiro atual
+print(board)
+import chess
+import chess.engine
+import time
+
+# Cria um motor de xadrez usando a engine Stockfish
+engine = chess.engine.SimpleEngine.popen_uci("stockfish_14_x64.exe")
+
+# Cria um novo jogo de xadrez
+board = chess.Board()
+
+# Loop principal do jogo
+while not board.is_game_over():
+    # Se for a vez do jogador humano, solicita a jogada
+    if board.turn == chess.WHITE:
+        move = input("Sua jogada: ")
+        # Verifica se a jogada é válida e a executa
+        if chess.Move.from_uci(move) in board.legal_moves:
+            board.push_uci(move)
+        else:
+            print("Jogada inválida")
+    # Se for a vez da IA, executa a jogada
+    else:
+        # Usa o motor de xadrez para calcular a melhor jogada
+        result = engine.play(board, chess.engine.Limit(time=2.0))
+        board.push(result.move)
+        print("Jogada da IA:", result.move.uci())
+
+# Exibe o resultado do jogo
+print("Resultado:", board.result())
